@@ -12,20 +12,15 @@ listen:
   grpc:
     addr: :4317
 
-ch_cluster:
-  cluster: uptrace
-  replicated: false
-  distributed: false
-  shards:
-    - replicas:
-        - addr: ${CH_ADDR}
-          database: ${CH_DATABASE}
-          user: ${CH_USER}
-          password: ${CH_PASSWORD}
-          dial_timeout: 3s
-          write_timeout: 5s
-          max_retries: 3
-          max_execution_time: 15s
+ch:
+  addr: ${CH_ADDR}
+  user: ${CH_USER}
+  password: ${CH_PASSWORD}
+  database: ${CH_DATABASE}
+  dial_timeout: 3s
+  write_timeout: 5s
+  max_retries: 3
+  max_execution_time: 15s
 
 pg:
   addr: ${PG_ADDR}
