@@ -63,10 +63,11 @@
       "image": "debian:bookworm-slim"
     },
     "inputs": [
-      { "step": "backend-build", "include": ["/out/uptrace"] }
+      { "step": "backend-build", "include": ["/out/uptrace"] },
+      { "local": true, "include": ["config/uptrace.yml", "entrypoint.sh"] }
     ],
     "aptPackages": ["ca-certificates"],
-    "startCommand": "/out/uptrace serve --config=/etc/uptrace/uptrace.yml",
+    "startCommand": "/app/entrypoint.sh",
     "variables": {
       "CGO_ENABLED": "0"
     },
