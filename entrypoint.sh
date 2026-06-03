@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-CONFIG="${UPTRACE_CONFIG:-/etc/uptrace/uptrace.yml}"
+CONFIG="${UPTRACE_CONFIG:-/app/uptrace.yml}"
 
 if [ $# -eq 0 ]; then
     echo "Waiting for PostgreSQL..."
