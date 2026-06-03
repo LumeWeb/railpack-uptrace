@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 CONFIG="${UPTRACE_CONFIG:-/etc/uptrace/uptrace.yml}"
