@@ -64,7 +64,7 @@
     },
     "inputs": [
       { "step": "backend-build", "include": ["/out/uptrace"] },
-      { "local": true, "include": ["config/uptrace.yml", "entrypoint.sh"] }
+      { "local": true, "include": ["entrypoint.sh"] }
     ],
     "aptPackages": ["ca-certificates"],
     "startCommand": "/app/entrypoint.sh",
