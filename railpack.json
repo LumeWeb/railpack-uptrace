@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "golang",
+  "packages": {
+    "go": "1.24",
+    "node": "22",
+    "pnpm": "9"
+  },
+  "buildAptPackages": ["git"],
+  "caches": {
+    "pnpm-store": {
+      "directory": "/root/.local/share/pnpm/store",
+      "type": "shared"
+    },
+    "go-build": {
+      "directory": "/root/.cache/go-build",
+      "type": "shared"
+    }
+  },
+  "steps": {
+    "clone": {
+      "commands": [
+        {
+          "cmd": "git -c url.\"https://github.com/\".insteadOf=\"git@github.com:\" clone --recurse-submodules https://github.com/uptrace/uptrace.git /app",
+          "customName": "Clone Uptrace repo with submodules"
+        }
+      ],
+      "deployOutputs": []
+    },
+    "frontend": {
+      "inputs": [
+        { "step": "clone" }
+      ],
+      "commands": [
+        "cd vue && pnpm install --frozen-lockfile",
+        "cd vue && BASE_URL=/UPTRACE_PLACEHOLDER/ pnpm vue-cli-service build --mode=production"
+      ],
+      "caches": ["pnpm-store"],
+      "deployOutputs": []
+    },
+    "backend-build": {
+      "inputs": [
+        { "step": "frontend" }
+      ],
+      "variables": {
+        "CGO_ENABLED": "0"
+      },
+      "commands": [
+        "go mod download",
+        {
+          "cmd": "go build -trimpath -ldflags '-X github.com/uptrace/uptrace/pkg/internal/version.Version=dev' -o /out/uptrace ./cmd/uptrace",
+          "customName": "Build Uptrace binary"
+        }
+      ],
+      "caches": ["go-build"],
+      "deployOutputs": [
+        { "include": ["/out/uptrace"] }
+      ]
+    }
+  },
+  "deploy": {
+    "base": {
+      "image": "debian:bookworm-slim"
+    },
+    "inputs": [
+      { "step": "backend-build", "include": ["/out/uptrace"] }
+    ],
+    "aptPackages": ["ca-certificates"],
+    "startCommand": "/out/uptrace serve --config=/etc/uptrace/uptrace.yml",
+    "variables": {
+      "CGO_ENABLED": "0"
+    },
+    "paths": ["/out"]
+  }
+}
